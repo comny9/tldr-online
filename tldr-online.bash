@@ -17,13 +17,49 @@ self_update() {
 }
 
 SELF_NAME="$(basename "$0" .bash)"
+SELF_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+
+show_usage() {
+  cat <<EOF
+Usage: $SELF_NAME <command> [subcommand...] [--platform=<platform>]
+  e.g. $SELF_NAME git worktree
+       $SELF_NAME apt --platform=linux
+  See '$SELF_NAME -h' for more info.
+EOF
+}
+
+show_help() {
+  cat <<EOF
+Usage: $SELF_NAME <command> [subcommand...] [--platform=<platform>]
+       $SELF_NAME --update
+       $SELF_NAME -h | --help
+
+Options:
+  --platform=<platform>  Specify platform (linux, osx, common, etc.)
+  --update               Update tldr-online itself (git pull)
+  -h, --help             Show this help
+
+Examples:
+  $SELF_NAME git worktree
+  $SELF_NAME apt --platform=linux
+
+Update:
+  $SELF_NAME --update
+
+Uninstall:
+  rm "$(command -v "$SELF_NAME" 2>/dev/null || echo ~/.local/bin/$SELF_NAME)"
+  rm -rf "$SELF_DIR"
+EOF
+}
 
 if [[ $# -eq 0 ]]; then
-  echo "Usage: $SELF_NAME <command> [subcommand...] [--platform=<platform>]"
-  echo "       $SELF_NAME --update"
-  echo "  e.g. $SELF_NAME git worktree"
-  echo "       $SELF_NAME apt --platform=linux"
+  show_usage
   exit 1
+fi
+
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+  show_help
+  exit 0
 fi
 
 if [[ "$1" == "--update" ]]; then
