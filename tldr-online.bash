@@ -7,7 +7,7 @@ PLATFORMS=("common" "linux" "osx" "android" "windows" "freebsd" "netbsd" "openbs
 self_update() {
   local script_dir
   script_dir="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
-  if [[ -d "$script_dir/.git" ]]; then
+  if git -C "$script_dir" rev-parse --is-inside-work-tree &>/dev/null; then
     git -C "$script_dir" pull
   else
     echo "Error: not a git repository ($script_dir)" >&2

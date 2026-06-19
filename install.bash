@@ -25,10 +25,10 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-if [[ -f "$SCRIPT_DIR/tldr-online.bash" && -d "$SCRIPT_DIR/.git" ]]; then
+if [[ -f "$SCRIPT_DIR/tldr-online.bash" ]] && git -C "$SCRIPT_DIR" rev-parse --is-inside-work-tree &>/dev/null; then
   DATA_DIR="$SCRIPT_DIR"
   echo "Using local repository: $DATA_DIR"
-elif [[ -d "$DATA_DIR/.git" ]]; then
+elif git -C "$DATA_DIR" rev-parse --is-inside-work-tree &>/dev/null; then
   echo "Updating existing installation..."
   git -C "$DATA_DIR" pull
 else
