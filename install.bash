@@ -48,5 +48,26 @@ if ! echo "$PATH" | tr ':' '\n' | grep -qxF "$BIN_DIR"; then
   echo "  export PATH=\"${BIN_DIR}:\$PATH\""
 fi
 
+if ! command -v glow &>/dev/null && ! command -v batcat &>/dev/null && ! command -v bat &>/dev/null; then
+  echo ""
+  echo "Markdown renderer (glow, bat) が見つかりません。"
+  echo "bat をインストールすると出力が見やすくなります。"
+  read -rp "bat をインストールしますか？ [y/N] " ans < /dev/tty
+  if [[ "$ans" == [yY] ]]; then
+    if command -v apt-get &>/dev/null; then
+      sudo apt-get install -y bat
+    elif command -v dnf &>/dev/null; then
+      sudo dnf install -y bat
+    elif command -v pacman &>/dev/null; then
+      sudo pacman -S --noconfirm bat
+    elif command -v brew &>/dev/null; then
+      brew install bat
+    else
+      echo "パッケージマネージャが見つかりません。手動でインストールしてください:"
+      echo "  https://github.com/sharkdp/bat#installation"
+    fi
+  fi
+fi
+
 echo ""
 echo "Update later with: $SCRIPT_NAME --update"
